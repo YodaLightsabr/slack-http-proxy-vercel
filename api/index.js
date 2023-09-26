@@ -5,10 +5,14 @@ export default async function handler (req, res) {
     try {
         output = await fetch(url, {
             method,
-            headers,
+            headers: headers || {},
             body
         }).then(res => res.text());
-    } catch (err) {}
+
+        console.log('Succeeded');
+    } catch (err) {
+        console.log('Failed', err);
+    }
 
     res.json({ output });
 }
