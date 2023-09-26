@@ -6,7 +6,7 @@ export default async function handler (req, res) {
         output = await fetch(url, {
             method,
             headers: headers || {},
-            body
+            body: method?.toLowerCase() === 'get' ? undefined : body
         }).then(res => res.text());
 
         console.log('Succeeded');
