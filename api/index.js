@@ -4,22 +4,12 @@ export default async function handler (req, res) {
     const { method, url, headers, body, transformations } = req.body;
 
     let raw_response = '';
-    let possible_json_response = '';
     try {
         raw_response = await fetch(url, {
             method,
             headers: headers || {},
             body: method?.toLowerCase() === 'get' ? undefined : body
         }).then(res => res.text());
-
-        possible_json_response = raw_response;
-
-        try {
-            possible_json_response = JSON.parse(possible_json_response);
-            console.log('JSON');
-        } catch (err) {
-            console.log('Not JSON');
-        }
 
         console.log('Succeeded');
     } catch (err) {
@@ -41,12 +31,17 @@ export default async function handler (req, res) {
                     {
                         name: "index.js",
                         content: `
-                            const response = decodeURIComponent("${encodeURIComponent(raw_response)}");
+                            let response = decodeURIComponent("${encodeURIComponent(raw_response)}");
 
-                            const transformFunctionA = ${transformations.a || 'data => ""'};
-                            const transformFunctionB = ${transformations.b || 'data => ""'};
-                            const transformFunctionC = ${transformations.c || 'data => ""'};
-                            const transformFunctionD = ${transformations.d || 'data => ""'};
+                            try {
+                                response = JSON.parse(response);
+                            } catch (err) {
+                            }
+
+                            const transformFunctionA = (${transformations.a || 'data => ""'});
+                            const transformFunctionB = (${transformations.b || 'data => ""'});
+                            const transformFunctionC = (${transformations.c || 'data => ""'});
+                            const transformFunctionD = (${transformations.d || 'data => ""'});
                             
                             let transformOutputA = '';
                             let transformOutputB = '';
