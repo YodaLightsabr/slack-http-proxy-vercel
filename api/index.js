@@ -38,7 +38,7 @@ export default async function handler (req, res) {
                     {
                         name: "index.js",
                         content: `
-                            const response = decodeURIComponent("${encodeURIComponent(response)}");
+                            const response = decodeURIComponent("${encodeURIComponent(raw_response)}");
 
                             const transformFunctionA = ${transformations.a || 'data => data'};
                             const transformFunctionB = ${transformations.b || 'data => data'};
