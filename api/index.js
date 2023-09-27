@@ -4,6 +4,7 @@ export default async function handler (req, res) {
     const { method, url, headers, body, transformations } = req.body;
 
     let raw_response = '';
+    let possible_json_response = '';
     try {
         raw_response = await fetch(url, {
             method,
@@ -11,8 +12,10 @@ export default async function handler (req, res) {
             body: method?.toLowerCase() === 'get' ? undefined : body
         }).then(res => res.text());
 
+        possible_json_response = raw_response;
+
         try {
-            raw_response = JSON.parse(raw_response);
+            possible_json_response = JSON.parse(possible_json_response);
             console.log('JSON');
         } catch (err) {
             console.log('Not JSON');
@@ -40,10 +43,10 @@ export default async function handler (req, res) {
                         content: `
                             const response = decodeURIComponent("${encodeURIComponent(raw_response)}");
 
-                            const transformFunctionA = ${transformations.a || 'data => data'};
-                            const transformFunctionB = ${transformations.b || 'data => data'};
-                            const transformFunctionC = ${transformations.c || 'data => data'};
-                            const transformFunctionD = ${transformations.d || 'data => data'};
+                            const transformFunctionA = ${transformations.a || 'data => ""'};
+                            const transformFunctionB = ${transformations.b || 'data => ""'};
+                            const transformFunctionC = ${transformations.c || 'data => ""'};
+                            const transformFunctionD = ${transformations.d || 'data => ""'};
                             
                             let transformOutputA = '';
                             let transformOutputB = '';
